@@ -3,6 +3,8 @@ package com.example.mediaplayer.mediaPlayer;
 import android.content.Context;
 
 public class MyMediaPlayer implements PlayerAdapter {
+    public enum State{PLAYING, PAUSED, STOP, COMPLETED}
+
     private Context context;
 
     @Override
