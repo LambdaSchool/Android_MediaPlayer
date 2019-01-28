@@ -1,17 +1,20 @@
 package com.joshuahalvorson.android_mediaplayer;
 
 import android.content.Context;
+import android.graphics.drawable.Animatable;
+import android.graphics.drawable.Drawable;
 import android.media.MediaPlayer;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.SeekBar;
 
 public class CustomMediaControls extends LinearLayout{
 
-    private Button playPauseButton;
+    private ImageView playPause;
     private SeekBar seekBar;
 
     public CustomMediaControls(Context context) {
@@ -35,12 +38,18 @@ public class CustomMediaControls extends LinearLayout{
     }
 
     public void enableMediaControl(final MediaPlayer mediaPlayer){
-        playPauseButton = new Button(getContext());
-        playPauseButton.setText("Play");
-        addView(playPauseButton);
-        playPauseButton.setEnabled(false);
+        playPause = new ImageView(getContext());
+
+        playPause.setImageDrawable(getResources().getDrawable(R.drawable.avd_anim_play_pause));
+        Drawable drawable = playPause.getDrawable();
+        if(drawable instanceof Animatable){
+            ((Animatable) drawable).start();
+        }
+
+        addView(playPause);
 
         seekBar = new SeekBar(getContext());
+
         seekBar.setLayoutParams(new ViewGroup.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT));
@@ -51,7 +60,7 @@ public class CustomMediaControls extends LinearLayout{
         mediaPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
             @Override
             public void onPrepared(MediaPlayer mp) {
-                playPauseButton.setEnabled(true);
+                playPause.setEnabled(true);
                 seekBar.setMax(mp.getDuration());
             }
         });
@@ -82,14 +91,14 @@ public class CustomMediaControls extends LinearLayout{
             }
         });
 
-        playPauseButton.setOnClickListener(new View.OnClickListener(){
+        playPause.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
                 if(mediaPlayer.isPlaying()){
-                    playPauseButton.setText("Pause");
+                    playPause.setImageDrawable(getResources().getDrawable(R.drawable.avd_anim_play_pause));
                     mediaPlayer.stop();
                 }else{
-                    playPauseButton.setText("Play");
+                    playPause.setImageDrawable(getResources().getDrawable(R.drawable.avd_anim_pause_play));
                     mediaPlayer.start();
                     new Thread(new Runnable() {
                         @Override
@@ -104,6 +113,10 @@ public class CustomMediaControls extends LinearLayout{
                             }
                         }
                     }).start();
+                }
+                Drawable drawable = playPause.getDrawable();
+                if(drawable instanceof Animatable){
+                    ((Animatable) drawable).start();
                 }
             }
         });
