@@ -8,6 +8,19 @@
     android:background="#333333"
     android:orientation="vertical">
 
+    <VideoView
+        android:id="@+id/video_view"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:layout_margin="30dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:visibility="invisible"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <SeekBar
         android:id="@+id/seekBar"
         android:layout_width="match_parent"
@@ -71,17 +84,7 @@
         app:layout_constraintStart_toEndOf="@+id/media_pause"
         app:layout_constraintTop_toBottomOf="@+id/seekBar" />
 
-    <VideoView
-        android:id="@+id/video_view"
-        android:layout_width="match_parent"
-        android:layout_height="200dp"
-        android:layout_margin="30dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+
 
     <LinearLayout
         android:id="@+id/media_linear_layout"
@@ -95,6 +98,6 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/media_rew"></LinearLayout>
+        app:layout_constraintTop_toBottomOf="@+id/media_rew" />
 
 </android.support.constraint.ConstraintLayout>
