@@ -16,13 +16,16 @@ import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.LinearLayout;
+import android.widget.SeekBar;
 import android.widget.TextView;
 
 public class MainActivity extends AppCompatActivity {
 
     public static final int REQUEST_CODE = 123;
-    Context context;
-    LinearLayout layoutList;
+    private Context context;
+    private LinearLayout layoutList;
+    private SeekBar seekBar;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
