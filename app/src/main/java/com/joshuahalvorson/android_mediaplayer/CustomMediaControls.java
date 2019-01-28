@@ -16,6 +16,7 @@ public class CustomMediaControls extends LinearLayout{
 
     private ImageView playPause;
     private SeekBar seekBar;
+    private int currentPos;
 
     public CustomMediaControls(Context context) {
         super(context);
@@ -39,8 +40,10 @@ public class CustomMediaControls extends LinearLayout{
 
     public void enableMediaControl(final MediaPlayer mediaPlayer){
         playPause = new ImageView(getContext());
-
         playPause.setImageDrawable(getResources().getDrawable(R.drawable.avd_anim_play_pause));
+        playPause.setLayoutParams(new ViewGroup.LayoutParams(
+                200,
+                200));
         Drawable drawable = playPause.getDrawable();
         if(drawable instanceof Animatable){
             ((Animatable) drawable).start();
@@ -49,7 +52,6 @@ public class CustomMediaControls extends LinearLayout{
         addView(playPause);
 
         seekBar = new SeekBar(getContext());
-
         seekBar.setLayoutParams(new ViewGroup.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT));
@@ -96,9 +98,11 @@ public class CustomMediaControls extends LinearLayout{
             public void onClick(View v) {
                 if(mediaPlayer.isPlaying()){
                     playPause.setImageDrawable(getResources().getDrawable(R.drawable.avd_anim_play_pause));
-                    mediaPlayer.stop();
-                }else{
+                    currentPos = mediaPlayer.getCurrentPosition();
+                    mediaPlayer.pause();
+                }else {
                     playPause.setImageDrawable(getResources().getDrawable(R.drawable.avd_anim_pause_play));
+                    mediaPlayer.seekTo(currentPos);
                     mediaPlayer.start();
                     new Thread(new Runnable() {
                         @Override

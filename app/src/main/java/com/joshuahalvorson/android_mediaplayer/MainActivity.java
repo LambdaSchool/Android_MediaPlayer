@@ -4,12 +4,14 @@ import android.content.Intent;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.net.Uri;
+import android.os.Parcelable;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 
 import java.io.IOException;
+import java.io.Serializable;
 
 public class MainActivity extends AppCompatActivity {
     private MediaPlayer mediaPlayer;
@@ -21,6 +23,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         customMediaControls = findViewById(R.id.media_controls);
+
 
         findViewById(R.id.add_button).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -39,13 +42,16 @@ public class MainActivity extends AppCompatActivity {
         Uri uri = null;
         if (data != null) {
             uri = data.getData();
-            mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
-            try {
-                mediaPlayer.setDataSource(getApplicationContext(), uri);
-            } catch (IOException e) {
-                e.printStackTrace();
+            if(mediaPlayer != null){
+                mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
+                try {
+                    mediaPlayer.setDataSource(getApplicationContext(), uri);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                customMediaControls.enableMediaControl(mediaPlayer);
             }
-            customMediaControls.enableMediaControl(mediaPlayer);
+
         }
     }
 
