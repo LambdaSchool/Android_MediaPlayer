@@ -32,6 +32,8 @@ public class CustomMediaControls extends LinearLayout{
     }
 
     public void enablePlayPause(final MediaPlayer mediaPlayer){
+        playPauseButton = new Button(getContext());
+        addView(playPauseButton);
         playPauseButton.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
@@ -42,15 +44,10 @@ public class CustomMediaControls extends LinearLayout{
                 }
             }
         });
-
-
     }
 
     public void init(AttributeSet attrs){
         setOrientation(HORIZONTAL);
-
-        playPauseButton = new Button(getContext());
-        addView(playPauseButton);
 
     }
 }
