@@ -22,8 +22,6 @@ public class MainActivity extends AppCompatActivity {
 
         customMediaControls = findViewById(R.id.media_controls);
 
-        mediaPlayer = new MediaPlayer();
-
         findViewById(R.id.add_button).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -32,13 +30,12 @@ public class MainActivity extends AppCompatActivity {
                 startActivityForResult(intent, 1);
             }
         });
-
-
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        mediaPlayer = new MediaPlayer();
         Uri uri = data.getData();
         mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
         try {
@@ -52,6 +49,9 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onStop() {
         super.onStop();
-        //mediaPlayer.release();
+        if(mediaPlayer != null){
+            mediaPlayer.release();
+            mediaPlayer = null;
+        }
     }
 }
