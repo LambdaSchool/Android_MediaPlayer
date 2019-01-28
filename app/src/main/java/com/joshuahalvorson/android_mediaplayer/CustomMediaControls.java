@@ -45,6 +45,7 @@ public class CustomMediaControls extends LinearLayout{
         TextView titleText = new TextView(getContext());
         titleText.setText(trackInfo);
         titleText.setTextColor(Color.WHITE);
+        titleText.setTextSize(24);
         titleText.setGravity(Gravity.CENTER);
         addView(titleText);
 
