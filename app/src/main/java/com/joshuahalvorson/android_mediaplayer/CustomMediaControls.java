@@ -11,6 +11,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.SeekBar;
+import android.widget.TextView;
 
 public class CustomMediaControls extends LinearLayout{
 
@@ -38,7 +39,10 @@ public class CustomMediaControls extends LinearLayout{
         init(attrs);
     }
 
-    public void enableMediaControl(final MediaPlayer mediaPlayer){
+    public void enableMediaControl(final MediaPlayer mediaPlayer, String trackInfo){
+        TextView titleText = new TextView(getContext());
+        titleText.setText(trackInfo);
+        addView(titleText);
         playPause = new ImageView(getContext());
         playPause.setImageDrawable(getResources().getDrawable(R.drawable.avd_anim_play_pause));
         playPause.setLayoutParams(new ViewGroup.LayoutParams(
@@ -127,7 +131,7 @@ public class CustomMediaControls extends LinearLayout{
     }
 
     public void init(AttributeSet attrs){
-        setOrientation(HORIZONTAL);
+        setOrientation(VERTICAL);
         setLayoutParams(new ViewGroup.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT));

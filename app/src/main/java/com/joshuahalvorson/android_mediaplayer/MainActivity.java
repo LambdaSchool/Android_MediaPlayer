@@ -1,10 +1,12 @@
 package com.joshuahalvorson.android_mediaplayer;
 
 import android.content.Intent;
+import android.database.Cursor;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Parcelable;
+import android.provider.OpenableColumns;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -40,6 +42,7 @@ public class MainActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         mediaPlayer = new MediaPlayer();
         Uri uri = null;
+        String fileName = "";
         if (data != null) {
             uri = data.getData();
             if(mediaPlayer != null){
@@ -49,7 +52,20 @@ public class MainActivity extends AppCompatActivity {
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-                customMediaControls.enableMediaControl(mediaPlayer);
+
+                if (uri.toString().startsWith("content://")) {
+                    Cursor cursor = null;
+                    try {
+                        cursor = getContentResolver().query(uri, null, null, null, null);
+                        if (cursor != null && cursor.moveToFirst()) {
+                            fileName = cursor.getString(cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME));
+                        }
+                    } finally {
+                        cursor.close();
+                    }
+                }
+
+                customMediaControls.enableMediaControl(mediaPlayer, fileName);
             }
 
         }
