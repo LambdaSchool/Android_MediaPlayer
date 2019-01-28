@@ -36,14 +36,17 @@ public class MainActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         mediaPlayer = new MediaPlayer();
-        Uri uri = data.getData();
-        mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
-        try {
-            mediaPlayer.setDataSource(getApplicationContext(), uri);
-        } catch (IOException e) {
-            e.printStackTrace();
+        Uri uri = null;
+        if (data != null) {
+            uri = data.getData();
+            mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
+            try {
+                mediaPlayer.setDataSource(getApplicationContext(), uri);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            customMediaControls.enableMediaControl(mediaPlayer);
         }
-        customMediaControls.enableMediaControl(mediaPlayer);
     }
 
     @Override
