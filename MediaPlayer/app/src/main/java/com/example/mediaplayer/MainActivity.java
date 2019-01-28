@@ -24,6 +24,7 @@ public class MainActivity extends AppCompatActivity {
     private Button pause;
     private Button stop;
     private PlayerAdapter playerAdapter;
+    private boolean trackingUser = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,6 +33,7 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         initializePlayer();
+        initializeSeekbar();
 
         FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -43,11 +45,37 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    private void initializeSeekbar() {
+
+        seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+
+            int selection = 0;
+
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                if (fromUser){
+                    selection = progress;
+                }
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+                trackingUser = true;
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+                trackingUser = false;
+                playerAdapter.seekTo(selection);
+            }
+        });
+    }
+
     private void initializePlayer() {
-        song  = findViewById(R.id.tvSong);
-        play  = findViewById(R.id.btnPlay);
-        pause = findViewById(R.id.btnPause);
-        stop  = findViewById(R.id.btnStop);
+        song     = findViewById(R.id.tvSong);
+        play     = findViewById(R.id.btnPlay);
+        pause    = findViewById(R.id.btnPause);
+        stop     = findViewById(R.id.btnStop);
         seekBar  = findViewById(R.id.seekBar);
 
         play.setOnClickListener(new View.OnClickListener() {

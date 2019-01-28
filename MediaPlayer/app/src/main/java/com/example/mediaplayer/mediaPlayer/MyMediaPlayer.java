@@ -35,4 +35,9 @@ public class MyMediaPlayer implements PlayerAdapter {
     public void initializeProgress() {
 
     }
+
+    @Override
+    public void seekTo(int position) {
+
+    }
 }

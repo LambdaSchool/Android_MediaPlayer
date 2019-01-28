@@ -8,4 +8,5 @@ public interface PlayerAdapter {
     void pause();
     void stop();
     void initializeProgress();
+    void seekTo(int position);
 }
