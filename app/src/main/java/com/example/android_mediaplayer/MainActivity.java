@@ -53,11 +53,7 @@ public class MainActivity extends AppCompatActivity {
         if (resultCode == RESULT_OK) {
             if (requestCode == REQUEST_CODE) {
                 Uri uri = data.getData();
-                Cursor cursor = getContentResolver().query(uri, null, null, null, null);
-                cursor.moveToFirst();
-                String displayName = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DISPLAY_NAME));
-                cursor.close();
-                layoutList.addView(textViewGenerator(displayName));
+                layoutList.addView(textViewGenerator(uri));
             }
         }
 
@@ -85,26 +81,29 @@ public class MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    private TextView textViewGenerator(String displayText) {
+    private TextView textViewGenerator(final Uri uri) {
         TextView view = new TextView(context);
+
+        String displayText = "placeholder";
+        Cursor cursor = getContentResolver().query(uri, null, null, null, null);
+        cursor.moveToFirst();
+        displayText = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DISPLAY_NAME));
+        cursor.close();
+
         view.setText(displayText);
         view.setTextSize(TypedValue.COMPLEX_UNIT_SP, 32);
         view.setPadding(15, 15, 15, 15);
-        view.setTextAlignment(view.TEXT_ALIGNMENT_CENTER);
-        view.setWidth(2000);
+        view.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
         view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-/*                ImageData photoData;
-                photoData = imageArrayList.get(listIndex);
-                Intent clickIntent = new Intent(context, DetailsActivity.class);
-                clickIntent.putExtra("DISPLAY_IMAGE",photoData);
-                startActivity(clickIntent);*/
+                Intent intent = new Intent(context, PlayerActivity.class);
+                intent.putExtra(PlayerActivity.SELECTED_MEDIA, uri);
+                startActivity(intent);
             }
         });
         return view;
     }
-
 
 
 }
