@@ -11,6 +11,8 @@ import android.util.Log;
 import android.view.View;
 import android.widget.VideoView;
 
+import java.io.IOException;
+
 public class MainActivity extends AppCompatActivity {
     private MediaPlayer mediaPlayer;
     private CustomMediaControls customMediaControls;
@@ -22,6 +24,7 @@ public class MainActivity extends AppCompatActivity {
 
         customMediaControls = findViewById(R.id.media_controls);
 
+        mediaPlayer = new MediaPlayer();
 
         findViewById(R.id.add_button).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -39,14 +42,18 @@ public class MainActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         Uri uri = data.getData();
-        mediaPlayer = MediaPlayer.create(getApplicationContext(), uri);
         mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
+        try {
+            mediaPlayer.setDataSource(getApplicationContext(), uri);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         customMediaControls.enablePlayPause(mediaPlayer);
     }
 
     @Override
     protected void onStop() {
         super.onStop();
-        //mediaPlayer.release();
+        mediaPlayer.release();
     }
 }
