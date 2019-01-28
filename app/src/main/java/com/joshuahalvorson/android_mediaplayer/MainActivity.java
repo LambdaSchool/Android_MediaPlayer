@@ -8,24 +8,25 @@ import android.net.Uri;
 import android.os.Parcelable;
 import android.provider.OpenableColumns;
 import android.support.annotation.Nullable;
+import android.support.constraint.ConstraintLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.LinearLayout;
 
 import java.io.IOException;
 import java.io.Serializable;
 
 public class MainActivity extends AppCompatActivity {
     private MediaPlayer mediaPlayer;
-    private CustomMediaControls customMediaControls;
+    private LinearLayout parent_view;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        customMediaControls = findViewById(R.id.media_controls);
-
+        parent_view = findViewById(R.id.parent_view);
 
         findViewById(R.id.add_button).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -64,10 +65,10 @@ public class MainActivity extends AppCompatActivity {
                         cursor.close();
                     }
                 }
-
-                customMediaControls.enableMediaControl(mediaPlayer, fileName);
             }
-
+            CustomMediaControls customMediaControls = new CustomMediaControls(getApplicationContext(), mediaPlayer, fileName);
+            parent_view.removeAllViews();
+            parent_view.addView(customMediaControls);
         }
     }
 

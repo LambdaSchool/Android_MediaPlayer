@@ -21,27 +21,27 @@ public class CustomMediaControls extends LinearLayout{
     private SeekBar seekBar;
     private int currentPos;
 
-    public CustomMediaControls(Context context) {
+    public CustomMediaControls(Context context, final MediaPlayer mediaPlayer, String trackInfo) {
         super(context);
-        init(null);
+        init(null, mediaPlayer, trackInfo);
     }
 
     public CustomMediaControls(Context context, AttributeSet attrs) {
         super(context, attrs);
-        init(attrs);
+        init(attrs, null, null);
     }
 
     public CustomMediaControls(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        init(attrs);
+        init(attrs, null, null);
     }
 
     public CustomMediaControls(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
-        init(attrs);
+        init(attrs, null, null);
     }
 
-    public void enableMediaControl(final MediaPlayer mediaPlayer, String trackInfo){
+    private void enableMediaControl(final MediaPlayer mediaPlayer, String trackInfo){
         TextView titleText = new TextView(getContext());
         titleText.setText(trackInfo);
         titleText.setTextColor(Color.WHITE);
@@ -144,11 +144,14 @@ public class CustomMediaControls extends LinearLayout{
         });
     }
 
-    public void init(AttributeSet attrs){
+    public void init(AttributeSet attrs, final MediaPlayer mediaPlayer, String trackInfo){
+
         setOrientation(VERTICAL);
         setLayoutParams(new ViewGroup.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT));
         setBackgroundColor(Color.DKGRAY);
+
+        enableMediaControl(mediaPlayer, trackInfo);
     }
 }
