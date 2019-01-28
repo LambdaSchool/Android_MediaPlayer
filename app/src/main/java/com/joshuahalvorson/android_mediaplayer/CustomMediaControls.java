@@ -1,10 +1,12 @@
 package com.joshuahalvorson.android_mediaplayer;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.graphics.drawable.Animatable;
 import android.graphics.drawable.Drawable;
 import android.media.MediaPlayer;
 import android.util.AttributeSet;
+import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -42,9 +44,25 @@ public class CustomMediaControls extends LinearLayout{
     public void enableMediaControl(final MediaPlayer mediaPlayer, String trackInfo){
         TextView titleText = new TextView(getContext());
         titleText.setText(trackInfo);
+        titleText.setTextColor(Color.WHITE);
+        titleText.setGravity(Gravity.CENTER);
         addView(titleText);
+
+        seekBar = new SeekBar(getContext());
+        seekBar.setLayoutParams(new ViewGroup.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT));
+        addView(seekBar);
+
+        LinearLayout playbackControls = new LinearLayout(getContext());
+        playbackControls.setOrientation(HORIZONTAL);
+        playbackControls.setLayoutParams(new ViewGroup.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT));
+        addView(playbackControls);
+
         playPause = new ImageView(getContext());
-        playPause.setImageDrawable(getResources().getDrawable(R.drawable.avd_anim_play_pause));
+        playPause.setImageDrawable(getResources().getDrawable(R.drawable.avd_anim_pause_play));
         playPause.setLayoutParams(new ViewGroup.LayoutParams(
                 200,
                 200));
@@ -52,14 +70,9 @@ public class CustomMediaControls extends LinearLayout{
         if(drawable instanceof Animatable){
             ((Animatable) drawable).start();
         }
+        playbackControls.setGravity(Gravity.CENTER);
+        playbackControls.addView(playPause);
 
-        addView(playPause);
-
-        seekBar = new SeekBar(getContext());
-        seekBar.setLayoutParams(new ViewGroup.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT,
-                ViewGroup.LayoutParams.WRAP_CONTENT));
-        addView(seekBar);
 
         mediaPlayer.prepareAsync();
 
@@ -101,11 +114,11 @@ public class CustomMediaControls extends LinearLayout{
             @Override
             public void onClick(View v) {
                 if(mediaPlayer.isPlaying()){
-                    playPause.setImageDrawable(getResources().getDrawable(R.drawable.avd_anim_play_pause));
+                    playPause.setImageDrawable(getResources().getDrawable(R.drawable.avd_anim_pause_play));
                     currentPos = mediaPlayer.getCurrentPosition();
                     mediaPlayer.pause();
                 }else {
-                    playPause.setImageDrawable(getResources().getDrawable(R.drawable.avd_anim_pause_play));
+                    playPause.setImageDrawable(getResources().getDrawable(R.drawable.avd_anim_play_pause));
                     mediaPlayer.seekTo(currentPos);
                     mediaPlayer.start();
                     new Thread(new Runnable() {
@@ -135,5 +148,6 @@ public class CustomMediaControls extends LinearLayout{
         setLayoutParams(new ViewGroup.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT));
+        setBackgroundColor(Color.DKGRAY);
     }
 }

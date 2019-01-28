@@ -11,12 +11,12 @@
             <path
                 android:name="play_top"
                 android:pathData="M 8 5 L 8 12 L 19 12 L 8 5 Z"
-                android:fillColor="#000"
+                android:fillColor="#fff"
                 android:strokeWidth="1"/>
             <path
                 android:name="play_bottom"
                 android:pathData="M 8 12 L 8 19 L 19 12 L 8 12 Z"
-                android:fillColor="#000"
+                android:fillColor="#fff"
                 android:strokeWidth="1"/>
         </vector>
     </aapt:attr>

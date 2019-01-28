@@ -6,22 +6,24 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
-    <com.joshuahalvorson.android_mediaplayer.CustomMediaControls
-        android:id="@+id/media_controls"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_constraintBottom_toTopOf="@+id/add_button"
-        app:layout_constraintTop_toTopOf="parent">
-
-    </com.joshuahalvorson.android_mediaplayer.CustomMediaControls>
 
     <Button
         android:id="@+id/add_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="add audio"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:text="Add song"
+        app:layout_constraintBottom_toTopOf="@+id/media_controls"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent" />
+
+    <com.joshuahalvorson.android_mediaplayer.CustomMediaControls
+        android:id="@+id/media_controls"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+    </com.joshuahalvorson.android_mediaplayer.CustomMediaControls>
+
 </android.support.constraint.ConstraintLayout>
