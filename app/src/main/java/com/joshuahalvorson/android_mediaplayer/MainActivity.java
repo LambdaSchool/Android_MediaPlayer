@@ -7,9 +7,7 @@ import android.net.Uri;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
-import android.widget.VideoView;
 
 import java.io.IOException;
 
@@ -48,12 +46,12 @@ public class MainActivity extends AppCompatActivity {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        customMediaControls.enablePlayPause(mediaPlayer);
+        customMediaControls.enableMediaControl(mediaPlayer);
     }
 
     @Override
     protected void onStop() {
         super.onStop();
-        mediaPlayer.release();
+        //mediaPlayer.release();
     }
 }
