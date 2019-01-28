@@ -12,6 +12,7 @@ import android.widget.Button;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
+import com.example.mediaplayer.mediaPlayer.MyMediaPlayer;
 import com.example.mediaplayer.mediaPlayer.PlayerAdapter;
 
 public class MainActivity extends AppCompatActivity {
@@ -19,10 +20,10 @@ public class MainActivity extends AppCompatActivity {
     private static final String TAG = MainActivity.class.getSimpleName();
 
     private TextView song;
-    private SeekBar seekBar;
-    private Button play;
-    private Button pause;
-    private Button stop;
+    private SeekBar  seekBar;
+    private Button   play;
+    private Button   pause;
+    private Button   stop;
     private PlayerAdapter playerAdapter;
     private boolean trackingUser = false;
 
@@ -32,8 +33,9 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        initializePlayer();
+        initializeUserInterface();
         initializeSeekbar();
+        initializeMediaPlayer();
 
         FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -43,6 +45,10 @@ public class MainActivity extends AppCompatActivity {
                         .setAction("Action", null).show();
             }
         });
+    }
+
+    private void initializeMediaPlayer() {
+        MyMediaPlayer mediaPlayer = new MyMediaPlayer(this);
     }
 
     private void initializeSeekbar() {
@@ -71,7 +77,7 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    private void initializePlayer() {
+    private void initializeUserInterface() {
         song     = findViewById(R.id.tvSong);
         play     = findViewById(R.id.btnPlay);
         pause    = findViewById(R.id.btnPause);

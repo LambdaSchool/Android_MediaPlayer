@@ -1,6 +1,10 @@
 package com.example.mediaplayer.mediaPlayer;
 
+import android.content.Context;
+
 public class MyMediaPlayer implements PlayerAdapter {
+    private Context context;
+
     @Override
     public void loadSong(int songId) {
 
@@ -14,6 +18,10 @@ public class MyMediaPlayer implements PlayerAdapter {
     @Override
     public void isPlaying() {
 
+    }
+
+    public MyMediaPlayer(Context context) {
+        this.context = context;
     }
 
     @Override
