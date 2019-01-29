@@ -24,8 +24,6 @@ public class MainActivity extends AppCompatActivity {
     public static final int REQUEST_CODE = 123;
     private Context context;
     private LinearLayout layoutList;
-    private SeekBar seekBar;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,6 +43,7 @@ public class MainActivity extends AppCompatActivity {
 //                        .setAction("Action", null).show();
                 Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
                 intent.setType("audio/*");
+                intent.putExtra(Intent.EXTRA_MIME_TYPES, new String[] {"audio/*", "video/*"});
                 startActivityForResult(intent, REQUEST_CODE);
             }
         });
@@ -90,7 +89,7 @@ public class MainActivity extends AppCompatActivity {
         String displayText = "placeholder";
         Cursor cursor = getContentResolver().query(uri, null, null, null, null);
         cursor.moveToFirst();
-        displayText = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DISPLAY_NAME));
+        displayText = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.DISPLAY_NAME));
         cursor.close();
 
         view.setText(displayText);
