@@ -5,9 +5,14 @@ import android.content.res.AssetFileDescriptor;
 import android.media.MediaPlayer;
 
 import java.io.IOException;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 public class MyMediaPlayer implements PlayerAdapter {
     private int songId;
+    private ScheduledExecutorService executor;
+    private Runnable seekbarPosition;
 
     public enum State{PLAYING, PAUSED, STOP, COMPLETED}
 
@@ -104,5 +109,20 @@ public class MyMediaPlayer implements PlayerAdapter {
         if (mediaPlayer != null){
             mediaPlayer.seekTo(position);
         }
+    }
+
+    private void updatePosition(){
+        if (executor == null){
+            executor = Executors.newSingleThreadScheduledExecutor();
+        }
+        if (seekbarPosition == null){
+            seekbarPosition = new Runnable() {
+                @Override
+                public void run() {
+                    updateProgress();
+                }
+            };
+        }
+        executor.scheduleAtFixedRate(seekbarPosition, 0, 1000, TimeUnit.MILLISECONDS);
     }
 }
