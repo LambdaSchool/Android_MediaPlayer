@@ -56,6 +56,8 @@ public class MyMediaPlayer implements PlayerAdapter {
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+        initializeProgress();
     }
 
     @Override
@@ -101,7 +103,11 @@ public class MyMediaPlayer implements PlayerAdapter {
 
     @Override
     public void initializeProgress() {
-
+        int duration = mediaPlayer.getDuration();
+        if (playbackInfoListener != null){
+            playbackInfoListener.onDurationChanged(duration);
+            playbackInfoListener.onPositionChanged(0);
+        }
     }
 
     @Override
