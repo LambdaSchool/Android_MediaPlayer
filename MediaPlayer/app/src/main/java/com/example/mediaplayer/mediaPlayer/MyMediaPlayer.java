@@ -125,4 +125,13 @@ public class MyMediaPlayer implements PlayerAdapter {
         }
         executor.scheduleAtFixedRate(seekbarPosition, 0, 1000, TimeUnit.MILLISECONDS);
     }
+
+    private void updateProgress() {
+        if (mediaPlayer != null && mediaPlayer.isPlaying()){
+            int currentPosition = mediaPlayer.getCurrentPosition();
+            if (playbackInfoListener != null){
+                playbackInfoListener.onPositionChanged(currentPosition);
+            }
+        }
+    }
 }
