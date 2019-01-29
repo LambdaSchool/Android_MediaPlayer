@@ -18,6 +18,7 @@ import com.example.mediaplayer.mediaPlayer.PlayerAdapter;
 public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = MainActivity.class.getSimpleName();
+    public static final int SONG_ID = R.raw.music;
 
     private TextView song;
     private SeekBar  seekBar;
@@ -49,6 +50,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void initializeMediaPlayer() {
         MyMediaPlayer mediaPlayer = new MyMediaPlayer(this);
+        playerAdapter = mediaPlayer;
     }
 
     private void initializeSeekbar() {
@@ -75,6 +77,12 @@ public class MainActivity extends AppCompatActivity {
                 playerAdapter.seekTo(selection);
             }
         });
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        playerAdapter.loadSong(SONG_ID);
     }
 
     private void initializeUserInterface() {
