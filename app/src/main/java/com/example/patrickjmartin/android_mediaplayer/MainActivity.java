@@ -35,7 +35,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         handler = new Handler();
-        mediaPlayer = new MediaPlayer();
+
         video = findViewById(R.id.video_view);
         seekBar = findViewById(R.id.seekBar);
         rewButton = findViewById(R.id.media_rew);
@@ -50,6 +50,7 @@ public class MainActivity extends AppCompatActivity {
         musicFab.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
+                mediaPlayer = new MediaPlayer();
                 Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
                 intent.setType("audio/* video/*");
                 startActivityForResult(intent, 1);
@@ -59,7 +60,9 @@ public class MainActivity extends AppCompatActivity {
         seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                mediaPlayer.seekTo(progress);
+               if(fromUser) {
+                   mediaPlayer.seekTo(progress);
+               }
             }
 
             @Override
@@ -84,7 +87,19 @@ public class MainActivity extends AppCompatActivity {
 
                 seekBar.setMax((int) endTime);
                 seekBar.setProgress((int)startTime);
-                handler.postDelayed(updateSeekBar, 70);
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        while (mediaPlayer.isPlaying()){
+                            seekBar.setProgress(mediaPlayer.getCurrentPosition());
+                            try {
+                                Thread.sleep(250);
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    }
+                }).start();
 
             }
         });
@@ -104,13 +119,14 @@ public class MainActivity extends AppCompatActivity {
         public void run() {
             startTime = mediaPlayer.getCurrentPosition();
             seekBar.setProgress((int)startTime);
-            handler.postDelayed(this, 70);
+            handler.postDelayed(this, 1000);
         }
     };
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+
         Uri uri = data.getData();
         ContentResolver resolver = this.getContentResolver();
         String type = resolver.getType(uri);
