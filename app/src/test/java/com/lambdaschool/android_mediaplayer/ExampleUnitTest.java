@@ -1,4 +1,4 @@
-package com.heiligbasil.android_mediaplayer;
+package com.lambdaschool.android_mediaplayer;
 
 import org.junit.Test;
 
