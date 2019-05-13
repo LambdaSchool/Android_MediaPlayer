@@ -25,4 +25,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 
+    <SeekBar
+        android:visibility="invisible"
+        app:layout_constraintTop_toBottomOf="@id/button_play"
+        android:id="@+id/audio_seekbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
 </android.support.constraint.ConstraintLayout>
