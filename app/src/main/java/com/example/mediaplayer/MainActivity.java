@@ -16,7 +16,8 @@ public class MainActivity extends AppCompatActivity {
 	
 	public final static int FILE_REQUEST_CODE = 1;
 	Button btnPlay;
-	Button btnLoad;
+	Button btnLoadAudio;
+	Button btnLoadVideo;
 	SeekBar seekBar;
 	VideoView videoView;
 	Runnable progressListenerRunnable;
@@ -35,22 +36,34 @@ public class MainActivity extends AppCompatActivity {
 		setContentView(R.layout.activity_main);
 		
 		btnPlay = findViewById(R.id.btn_play);
-		btnLoad = findViewById(R.id.btn_load);
+		btnLoadVideo = findViewById(R.id.btn_load_video);
+		btnLoadAudio = findViewById(R.id.btn_load_audio);
 		seekBar = findViewById(R.id.seekbar);
 		videoView = findViewById(R.id.video_view);
 		
 		
-		btnLoad.setOnClickListener(new View.OnClickListener() {
+		btnLoadVideo.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
 				
 				Intent intent = new Intent(Intent.ACTION_PICK);
-				intent.setType("*/*");
+				intent.setType("video/*");
 				intent.setAction(Intent.ACTION_GET_CONTENT);
 				startActivityForResult(intent, FILE_REQUEST_CODE);
 			}
 		});
 		
+		
+		btnLoadAudio.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				
+				Intent intent = new Intent(Intent.ACTION_PICK);
+				intent.setType("audio/*");
+				intent.setAction(Intent.ACTION_GET_CONTENT);
+				startActivityForResult(intent, FILE_REQUEST_CODE);
+			}
+		});
 		seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
 			@Override
 			public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
