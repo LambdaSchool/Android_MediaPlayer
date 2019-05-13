@@ -10,17 +10,20 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.SeekBar;
+import android.widget.VideoView;
 
 import java.io.IOException;
 
 public class MainActivity extends AppCompatActivity {
 
     public static final int AUDIO_REQUEST_CODE = 5;
-    Button requestButton, playButton;
-    MediaPlayer mediaPlayer;
-    SeekBar audioSeekbar;
+    public static final int VIDEO_REQUEST_CODE = 14;
+    Button requestButton, playButton, videoRequestButton, videoPlayButton;
+    MediaPlayer audioPlayer;
+    SeekBar audioSeekbar, videoSeekbar;
+    VideoView videoView;
     Context context;
-    Runnable audioProgressListenerRunnable;
+    Runnable audioProgressListenerRunnable, videoProgressListenerRunnable;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,8 +34,13 @@ public class MainActivity extends AppCompatActivity {
         requestButton = findViewById(R.id.button_request);
         playButton = findViewById(R.id.button_play);
         audioSeekbar = findViewById(R.id.audio_seekbar);
+        videoRequestButton = findViewById(R.id.button_video_request);
+        videoPlayButton = findViewById(R.id.button_video_play);
+        videoSeekbar = findViewById(R.id.video_seekbar);
+        videoView = findViewById(R.id.video_view);
+        videoPlayButton.setEnabled(false);
         playButton.setEnabled(false);
-        mediaPlayer = new MediaPlayer();
+        audioPlayer = new MediaPlayer();
 
         requestButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -43,16 +51,39 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        videoRequestButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+                intent.setType("video/*");
+                startActivityForResult(intent, VIDEO_REQUEST_CODE);
+            }
+        });
+
         playButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(mediaPlayer.isPlaying()){
-                    mediaPlayer.pause();
+                if(audioPlayer.isPlaying()){
+                    audioPlayer.pause();
                     playButton.setText("Resume Audio");
                 }else {
-                    mediaPlayer.start();
+                    audioPlayer.start();
                     playButton.setText("Pause Audio");
                     new Thread(audioProgressListenerRunnable).start();
+                }
+            }
+        });
+
+        videoPlayButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(videoView.isPlaying()){
+                    videoView.pause();
+                    videoPlayButton.setText("Resume video");
+                }else{
+                    videoView.start();
+                    videoPlayButton.setText("Pause Video");
+                    new Thread(videoProgressListenerRunnable).start();
                 }
             }
         });
@@ -60,11 +91,11 @@ public class MainActivity extends AppCompatActivity {
         audioProgressListenerRunnable = new Runnable() {
             @Override
             public void run() {
-                while(mediaPlayer.isPlaying()){
+                while(audioPlayer.isPlaying()){
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            audioSeekbar.setProgress(mediaPlayer.getCurrentPosition());
+                            audioSeekbar.setProgress(audioPlayer.getCurrentPosition());
                         }
                     });
                     try {
@@ -76,22 +107,60 @@ public class MainActivity extends AppCompatActivity {
             }
         };
 
+        videoProgressListenerRunnable = new Runnable() {
+            @Override
+            public void run() {
+                while(videoView.isPlaying()){
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            videoSeekbar.setProgress(videoView.getCurrentPosition());
+                        }
+                    });
+                    try {
+                        Thread.sleep(videoView.getDuration() / videoView.getWidth());
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        };
+
         audioSeekbar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 if(fromUser){
-                    mediaPlayer.seekTo(audioSeekbar.getProgress());
+                    audioPlayer.seekTo(audioSeekbar.getProgress());
                 }
             }
 
             @Override
             public void onStartTrackingTouch(SeekBar seekBar) {
-                    mediaPlayer.pause();
+                    audioPlayer.pause();
             }
 
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
-                mediaPlayer.start();
+                audioPlayer.start();
+            }
+        });
+
+        videoSeekbar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                if(fromUser){
+                    videoView.seekTo(videoSeekbar.getProgress());
+                }
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
             }
         });
     }
@@ -101,15 +170,31 @@ public class MainActivity extends AppCompatActivity {
         if (requestCode == AUDIO_REQUEST_CODE) {
             if (data != null) {
                 Uri audioUri = data.getData();
-                try {
-                    mediaPlayer.setDataSource(context, audioUri);
-                    mediaPlayer.prepare();
-                    playButton.setEnabled(true);
-                    audioSeekbar.setVisibility(View.VISIBLE);
-                    audioSeekbar.setMax(mediaPlayer.getDuration());
-                } catch (IOException e) {
-                    e.printStackTrace();
+                if(audioUri != null) {
+                    try {
+                        audioPlayer.setDataSource(context, audioUri);
+                        audioPlayer.prepare();
+                        playButton.setEnabled(true);
+                        audioSeekbar.setVisibility(View.VISIBLE);
+                        audioSeekbar.setMax(audioPlayer.getDuration());
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                 }
+            }
+        }
+        if(requestCode == VIDEO_REQUEST_CODE){
+            if(data != null) {
+                Uri videoUri = data.getData();
+                videoView.setVideoURI(videoUri);
+                videoView.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+                    @Override
+                    public void onPrepared(MediaPlayer mp) {
+                        videoPlayButton.setEnabled(true);
+                        videoSeekbar.setVisibility(View.VISIBLE);
+                        videoSeekbar.setMax(videoView.getDuration());
+                    }
+                });
             }
         }
     }
@@ -118,6 +203,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onStop() {
         super.onStop();
-        mediaPlayer.release();
+        audioPlayer.release();
+        videoView.stopPlayback();
     }
 }
