@@ -2,7 +2,6 @@ package com.vivekvishwanath.android_mediaplayer;
 
 import android.content.Intent;
 import android.media.MediaPlayer;
-import android.net.Uri;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -13,13 +12,14 @@ import android.widget.VideoView;
 
 public class MainActivity extends AppCompatActivity {
 
-    Button requestButton;
+    Button audioRequestButton;
+    Button videoRequestButton;
     VideoView videoView;
     Button controlButton;
     SeekBar progressBar;
     Thread progressListenerThread;
     Runnable progressListenerRunnable;
-    private static final int AUDIO_REQUEST_CODE = 2;
+    private static final int MEDIA_REQUEST_CODE = 2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,13 +37,23 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        requestButton = findViewById(R.id.request_button);
-        requestButton.setOnClickListener(new View.OnClickListener() {
+        audioRequestButton = findViewById(R.id.audio_request_button);
+        audioRequestButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
                 intent.setType("audio/*");
-                startActivityForResult(intent, AUDIO_REQUEST_CODE);
+                startActivityForResult(intent, MEDIA_REQUEST_CODE);
+            }
+        });
+
+        videoRequestButton = findViewById(R.id.video_request_button);
+        videoRequestButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+                intent.setType("video/*");
+                startActivityForResult(intent, MEDIA_REQUEST_CODE);
             }
         });
 
@@ -126,9 +136,21 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == AUDIO_REQUEST_CODE && resultCode == RESULT_OK) {
+        if (requestCode == MEDIA_REQUEST_CODE && resultCode == RESULT_OK) {
             videoView.setVideoURI(data.getData());
             videoView.pause();
         }
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        videoView.suspend();
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        videoView.resume();
     }
 }
