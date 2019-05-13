@@ -8,6 +8,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.SeekBar;
 import android.widget.VideoView;
 
 public class MainActivity extends AppCompatActivity {
@@ -15,6 +16,9 @@ public class MainActivity extends AppCompatActivity {
     Button requestButton;
     VideoView videoView;
     Button controlButton;
+    SeekBar progressBar;
+    Thread progressListenerThread;
+    Runnable progressListenerRunnable;
     private static final int AUDIO_REQUEST_CODE = 2;
 
     @Override
@@ -28,6 +32,8 @@ public class MainActivity extends AppCompatActivity {
             public void onPrepared(MediaPlayer mp) {
                 controlButton.setText(R.string.play);
                 controlButton.setEnabled(true);
+                progressBar.setMax(mp.getDuration());
+                progressListenerThread.start();
             }
         });
 
@@ -51,9 +57,70 @@ public class MainActivity extends AppCompatActivity {
                 } else {
                     videoView.start();
                     controlButton.setText(R.string.pause);
+                    new Thread(progressListenerRunnable).start();
                 }
             }
         });
+
+        progressBar = findViewById(R.id.progress_bar);
+        progressBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+                videoView.seekTo(seekBar.getProgress());
+                new Thread(progressListenerRunnable).start();
+            }
+        });
+
+        progressListenerThread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                while (videoView.isPlaying()) {
+                    final int currentPosition = videoView.getCurrentPosition();
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            progressBar.setProgress(currentPosition);
+                        }
+                    });
+                    try {
+                        Thread.sleep(videoView.getDuration() / 1000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        });
+
+        progressListenerRunnable = new Runnable() {
+            @Override
+            public void run() {
+                while (videoView.isPlaying()) {
+                    final int currentPosition = videoView.getCurrentPosition();
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            progressBar.setProgress(currentPosition);
+                        }
+                    });
+                    try {
+                        Thread.sleep(videoView.getDuration() / videoView.getWidth());
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        };
+
     }
 
     @Override
@@ -61,6 +128,7 @@ public class MainActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == AUDIO_REQUEST_CODE && resultCode == RESULT_OK) {
             videoView.setVideoURI(data.getData());
+            videoView.pause();
         }
     }
 }

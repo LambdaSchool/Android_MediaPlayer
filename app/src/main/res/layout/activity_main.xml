@@ -16,6 +16,14 @@
 
     </VideoView>
     
+    <SeekBar
+        android:id="@+id/progress_bar"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintLeft_toRightOf="@id/pause_play_button"
+        app:layout_constraintRight_toRightOf="@id/media_player"
+        app:layout_constraintBottom_toBottomOf="@id/media_player"/>
+    
     <Button
         android:id="@+id/pause_play_button"
         android:layout_width="wrap_content"
