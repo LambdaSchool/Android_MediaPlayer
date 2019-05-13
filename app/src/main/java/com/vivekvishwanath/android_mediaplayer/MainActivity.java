@@ -1,6 +1,7 @@
 package com.vivekvishwanath.android_mediaplayer;
 
 import android.content.Intent;
+import android.media.MediaPlayer;
 import android.net.Uri;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
@@ -13,6 +14,7 @@ public class MainActivity extends AppCompatActivity {
 
     Button requestButton;
     VideoView videoView;
+    Button controlButton;
     private static final int AUDIO_REQUEST_CODE = 2;
 
     @Override
@@ -21,6 +23,14 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         videoView = findViewById(R.id.media_player);
+        videoView.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+            @Override
+            public void onPrepared(MediaPlayer mp) {
+                controlButton.setText(R.string.play);
+                controlButton.setEnabled(true);
+            }
+        });
+
         requestButton = findViewById(R.id.request_button);
         requestButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -30,6 +40,20 @@ public class MainActivity extends AppCompatActivity {
                 startActivityForResult(intent, AUDIO_REQUEST_CODE);
             }
         });
+
+        controlButton = findViewById(R.id.pause_play_button);
+        controlButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (videoView.isPlaying()) {
+                    videoView.pause();
+                    controlButton.setText(R.string.play);
+                } else {
+                    videoView.start();
+                    controlButton.setText(R.string.pause);
+                }
+            }
+        });
     }
 
     @Override
@@ -37,7 +61,6 @@ public class MainActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == AUDIO_REQUEST_CODE && resultCode == RESULT_OK) {
             videoView.setVideoURI(data.getData());
-            videoView.start();
         }
     }
 }
