@@ -45,7 +45,7 @@ public class MainActivity extends AppCompatActivity {
         requestButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                audioPlayer.reset();
                 Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
                 intent.setType("audio/*");
                 startActivityForResult(intent, AUDIO_REQUEST_CODE);
@@ -176,6 +176,8 @@ public class MainActivity extends AppCompatActivity {
                         audioPlayer.setDataSource(context, audioUri);
                         audioPlayer.prepare();
                         playButton.setEnabled(true);
+                        playButton.setText("Play Audio");
+                        audioSeekbar.setProgress(0);
                         audioSeekbar.setVisibility(View.VISIBLE);
                         audioSeekbar.setMax(audioPlayer.getDuration());
                     } catch (IOException e) {
@@ -192,6 +194,8 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onPrepared(MediaPlayer mp) {
                         videoPlayButton.setEnabled(true);
+                        videoPlayButton.setText("Play Video");
+                        videoSeekbar.setProgress(0);
                         videoSeekbar.setVisibility(View.VISIBLE);
                         videoSeekbar.setMax(videoView.getDuration());
                     }
