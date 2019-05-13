@@ -1,6 +1,11 @@
 package com.lambdaschool.android_mediaplayer;
 
+import android.app.Activity;
+import android.content.Intent;
+import android.media.MediaPlayer;
+import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.view.View;
@@ -38,6 +43,11 @@ public class NavigationDrawerActivity extends AppCompatActivity
         drawer.addDrawerListener(toggle);
         toggle.syncState();
         navigationView.setNavigationItemSelectedListener(this);
+
+
+
+
+
     }
 
     @Override
@@ -78,9 +88,12 @@ public class NavigationDrawerActivity extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        if (id == R.id.nav_home) {
-            // Handle the camera action
-        } else if (id == R.id.nav_gallery) {
+        if (id == R.id.nav_audio) {
+            Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+            intent.setType("audio/*");
+            //intent.setDataAndType(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,"audio/*");
+            startActivityForResult(intent, 1);
+        } else if (id == R.id.nav_video) {
 
         } else if (id == R.id.nav_slideshow) {
 
@@ -95,5 +108,17 @@ public class NavigationDrawerActivity extends AppCompatActivity
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 1 && resultCode == Activity.RESULT_OK && data != null) {
+            Uri pickedMedia = data.getData();
+            MediaPlayer mediaPlayer = MediaPlayer.create(this, pickedMedia);
+            mediaPlayer.start();
+
+
+        }
     }
 }
