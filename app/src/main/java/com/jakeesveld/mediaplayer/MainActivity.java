@@ -45,6 +45,7 @@ public class MainActivity extends AppCompatActivity {
         requestButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
                 intent.setType("audio/*");
                 startActivityForResult(intent, AUDIO_REQUEST_CODE);
@@ -203,7 +204,6 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onStop() {
         super.onStop();
-        audioPlayer.release();
         videoView.stopPlayback();
     }
 }
