@@ -1,3 +1,17 @@
 <resources>
     <string name="app_name">Android_MediaPlayer</string>
+    <string name="title_activity_navigation_drawer">Android_MediaPlayer</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="nav_header_title">Basil\'s Media Picker</string>
+    <string name="nav_header_subtitle">Lambda School</string>
+    <string name="nav_header_desc">Navigation header</string>
+    <string name="action_settings">(ignore)</string>
+
+    <string name="menu_home">Pick Audio Files</string>
+    <string name="menu_gallery">Pick Video Files</string>
+    <string name="menu_slideshow">(ignore)</string>
+    <string name="menu_tools">(ignore)</string>
+    <string name="menu_share">(ignore)</string>
+    <string name="menu_send">(ignore)</string>
 </resources>
