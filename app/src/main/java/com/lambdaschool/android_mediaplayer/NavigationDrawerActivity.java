@@ -6,18 +6,15 @@ import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.view.View;
-import android.support.v4.view.GravityCompat;
-import android.support.v7.app.ActionBarDrawerToggle;
-import android.view.MenuItem;
 import android.support.design.widget.NavigationView;
+import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
-
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
 import android.widget.ImageButton;
 import android.widget.SeekBar;
 import android.widget.TextView;
@@ -31,6 +28,8 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
     SeekBar seekBar;
     TextView textView;
     ImageButton imageButton;
+    Runnable progressListenerRunnable;
+    Thread progressListenerThread;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,7 +55,47 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
 
 
         textView = findViewById(R.id.text_view);
+
         seekBar = findViewById(R.id.seekbar);
+        seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                if (fromUser)
+                    mediaPlayer.seekTo(progress);
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(final SeekBar seekBar) {
+                mediaPlayer.seekTo(seekBar.getProgress());
+                new Thread(progressListenerRunnable).start();
+            }
+        });
+        progressListenerRunnable = new Runnable() {
+            @Override
+            public void run() {
+                progressListenerThread = Thread.currentThread();
+                while (mediaPlayer.isPlaying()) {
+                    final int currentPosition = mediaPlayer.getCurrentPosition();
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            seekBar.setProgress(currentPosition);
+                        }
+                    });
+                    try {
+                        Thread.sleep(mediaPlayer.getDuration() / 1000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        };
+
         imageButton = findViewById(R.id.image_button);
         imageButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -65,9 +104,11 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
                 if (mediaPlayer.isPlaying()) {
                     mediaPlayer.pause();
                     imageButton.setImageResource(android.R.drawable.ic_media_play);
+                    new Thread(progressListenerRunnable).interrupt();
                 } else {
                     mediaPlayer.start();
                     imageButton.setImageResource(android.R.drawable.ic_media_pause);
+                    new Thread(progressListenerRunnable).start();
                 }
             }
         });
@@ -148,12 +189,16 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
                     mediaPlayer.release();
 
                 mediaPlayer = MediaPlayer.create(this, pickedMedia);
-                mediaPlayer.start();
+
                 textView.setText(MessageFormat.format("Loaded: {0}", new File(pickedMedia.getPath()).getName()));
                 textView.setAutoSizeTextTypeWithDefaults(TextView.AUTO_SIZE_TEXT_TYPE_UNIFORM);
+
                 seekBar.setVisibility(View.VISIBLE);
+                seekBar.setMax(mediaPlayer.getDuration());
+                seekBar.setProgress(0);
+
                 imageButton.setVisibility(View.VISIBLE);
-                imageButton.setImageResource(android.R.drawable.ic_media_pause);
+                imageButton.setImageResource(android.R.drawable.ic_media_play);
 
 
             }
@@ -162,18 +207,10 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
     }
 
     @Override
-    protected void onStart() {
-        super.onStart();
-
-        if (mediaPlayer != null)
-            mediaPlayer.start();
-    }
-
-    @Override
     protected void onStop() {
         super.onStop();
 
         if (mediaPlayer != null)
-            mediaPlayer.release();
+            mediaPlayer.reset();
     }
 }
