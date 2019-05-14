@@ -18,9 +18,19 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
+import android.widget.ImageButton;
+import android.widget.SeekBar;
+import android.widget.TextView;
 
-public class NavigationDrawerActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+import java.io.File;
+import java.text.MessageFormat;
+
+public class NavigationDrawerActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
+
+    MediaPlayer mediaPlayer;
+    SeekBar seekBar;
+    TextView textView;
+    ImageButton imageButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,14 +38,14 @@ public class NavigationDrawerActivity extends AppCompatActivity
         setContentView(R.layout.activity_navigation_drawer);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        FloatingActionButton fab = findViewById(R.id.fab);
+/*        FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
             }
-        });
+        });*/
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         NavigationView navigationView = findViewById(R.id.nav_view);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -45,8 +55,22 @@ public class NavigationDrawerActivity extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
 
 
+        textView = findViewById(R.id.text_view);
+        seekBar = findViewById(R.id.seekbar);
+        imageButton = findViewById(R.id.image_button);
+        imageButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
 
-
+                if (mediaPlayer.isPlaying()) {
+                    mediaPlayer.pause();
+                    imageButton.setImageResource(android.R.drawable.ic_media_play);
+                } else {
+                    mediaPlayer.start();
+                    imageButton.setImageResource(android.R.drawable.ic_media_pause);
+                }
+            }
+        });
 
     }
 
@@ -91,10 +115,11 @@ public class NavigationDrawerActivity extends AppCompatActivity
         if (id == R.id.nav_audio) {
             Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
             intent.setType("audio/*");
-            //intent.setDataAndType(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,"audio/*");
             startActivityForResult(intent, 1);
         } else if (id == R.id.nav_video) {
-
+            Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+            intent.setType("video/*");
+            startActivityForResult(intent, 2);
         } else if (id == R.id.nav_slideshow) {
 
         } else if (id == R.id.nav_tools) {
@@ -114,11 +139,41 @@ public class NavigationDrawerActivity extends AppCompatActivity
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == 1 && resultCode == Activity.RESULT_OK && data != null) {
-            Uri pickedMedia = data.getData();
-            MediaPlayer mediaPlayer = MediaPlayer.create(this, pickedMedia);
-            mediaPlayer.start();
 
+            Uri pickedMedia = data.getData();
+
+            if (pickedMedia != null) {
+
+                if (mediaPlayer != null)
+                    mediaPlayer.release();
+
+                mediaPlayer = MediaPlayer.create(this, pickedMedia);
+                mediaPlayer.start();
+                textView.setText(MessageFormat.format("Loaded: {0}", new File(pickedMedia.getPath()).getName()));
+                textView.setAutoSizeTextTypeWithDefaults(TextView.AUTO_SIZE_TEXT_TYPE_UNIFORM);
+                seekBar.setVisibility(View.VISIBLE);
+                imageButton.setVisibility(View.VISIBLE);
+                imageButton.setImageResource(android.R.drawable.ic_media_pause);
+
+
+            }
 
         }
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        if (mediaPlayer != null)
+            mediaPlayer.start();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+
+        if (mediaPlayer != null)
+            mediaPlayer.release();
     }
 }
